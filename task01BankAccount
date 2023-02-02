@@ -1,0 +1,126 @@
+package edu.ithaca.barr.bank;
+
+public class BankAccount {
+
+    private String email;
+    private double balance;
+
+    /**
+     * @throws IllegalArgumentException if email is invalid 
+     */
+
+     //
+    public BankAccount(String email, double startingBalance){
+        if (isEmailValid(email)){
+            this.email = email;
+            this.balance = startingBalance;
+        }
+        else {
+            throw new IllegalArgumentException("Email address: " + email + " is invalid, cannot create account");
+        }
+    }
+
+    public double getBalance(){
+        return balance;
+    }
+
+    public String getEmail(){
+        return email;
+    }
+
+    /**
+     * @post reduces the balance by amount if amount is non-negative and smaller than balance
+     */
+    //This method checks if the amount is less then or equal to the balance if not then its not enough money
+    public void withdraw (double amount) throws InsufficientFundsException{ 
+     if(amountValid(amount)){
+        if (amount <= balance){
+            balance -= amount;
+        }
+        else{
+            throw new InsufficientFundsException("Not enough money");
+        }
+     }
+     else{
+        throw new IllegalArgumentException("invalid number");
+     }
+    }
+
+
+    public static boolean isEmailValid(String email){
+        if (email.indexOf('@') == -1){
+            return false;
+        }
+        if (email.indexOf('#') == -1 || email.indexOf('#') > 0){
+            return false;
+        }
+        if (email.indexOf('<') == -1 || email.indexOf('<') >= 0){
+            return false;
+        }
+        if (email.indexOf('>') == -1 || email.indexOf('>') >= 0){
+            return false;
+        }
+        if (email.indexOf('_') == -1 || email.indexOf('_') >= 0){
+            return false;
+        }
+        if (email.indexOf('-') == -1 ){
+            return false;
+        }
+        else if(email.indexOf('-') < 0){
+            return true;
+        }
+        else if(email.indexOf('-') >= 2){
+            return false;
+        }
+        if (email.indexOf('%') == -1 || email.indexOf('%') > 0){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+
+    /**
+     * 
+     */
+    public static boolean amountValid(double amount){
+
+        if(amount < 0.0){
+
+            return false;
+        }
+        String countString = Double.toString(amount);
+        int amt = countString.length();
+        int findDot = countString.indexOf('.');
+        int numDot = (amt - 1) - findDot;
+
+        if(numDot < 2.0){
+            return false;
+        }
+        return true;
+    }
+
+
+    //private static int length() {
+        //return 0;
+    //}
+
+    public void deposit(double amount){
+        if(amountValid(amount) == false){
+            throw new IllegalArgumentException("This is not a Valid Amount");
+        }
+        else{
+            balance += amount;
+
+        }
+    }
+
+    public void transfer(BankAccount account, double amount) throws InsufficientFundsException, IllegalArgumentException{
+        withdraw(amount);
+        account.deposit(amount);
+    }
+
+    
+}
+
