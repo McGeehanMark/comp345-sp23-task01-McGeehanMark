@@ -1,0 +1,185 @@
+package edu.ithaca.barr.bank;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Assertions;
+
+
+
+class BankAccountTest {
+
+    @Test
+    void getBalanceTest() {
+        BankAccount bankAccount = new BankAccount("a@b.com", 200);
+        assertEquals(200, bankAccount.getBalance(), 0.001);
+
+        BankAccount bankAccountTwo = new BankAccount("mm---@.com", 300);
+        assertEquals(300, bankAccountTwo.getBalance(), 0.001); //starting balance of 300
+
+
+        BankAccount bankAccountThree = new BankAccount("mmcgeehan@@.com", 400);
+        assertEquals(400, bankAccountThree.getBalance(), 0.001); //starting balance of 400
+
+
+
+
+
+    }
+
+    /**
+     * @throws InsufficientFundsException
+     */
+    @Test
+    void withdrawTest() throws InsufficientFundsException{
+        BankAccount bankAccount = new BankAccount("a@b.com", 200); // the balance of this is bigger than 300
+        bankAccount.withdraw(100);
+
+        Assertions.assertEquals(100, bankAccount.getBalance(), 0.001);
+        Assertion.assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(300), "Balance exception thrown");
+        assertThrows(InsufficientFundsException.class, bankAccount.withdraw(10));
+        assertThrows(InsufficientFundsException.class, bankAccount.withdraw(101));
+        assertThrows(InsufficientFundsException.class, bankAccount.withdraw(20));
+        assertThrows(InsufficientFundsException.class, bankAccount.withdraw(4)); //
+        
+
+        BankAccount bankAccountTwo = new BankAccount("mm---@.com", 300); // the balance of this is bigger than 300
+        bankAccountTwo.withdraw(100);
+
+        assertEquals(200, bankAccountTwo.getBalance(), 0.001);
+        assertThrows(InsufficientFundsException.class, bankAccountTwo.withdraw(300));
+
+        BankAccount bankAccountThree = new BankAccount("mmcgeehan@@.com", 200); // the balance of this is bigger than 300
+        bankAccountThree.withdraw(100);
+
+        assertEquals(200, bankAccountTwo.getBalance(), 0.001);
+        assertThrows(InsufficientFundsException.class, bankAccountTwo.withdraw(300));
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+    @Test
+    void isEmailValidTest(){
+        assertTrue(BankAccount.isEmailValid( "a@b.com"));   // valid email address
+        assertFalse( BankAccount.isEmailValid(""));         // empty string
+        assertTrue(BankAccount.isEmailValid( "mm---@.com"));   // valid email address
+        assertFalse( BankAccount.isEmailValid(""));   
+        assertTrue(BankAccount.isEmailValid( "mmcgeehan@@.com"));   // valid email address
+        assertFalse( BankAccount.isEmailValid(""));   
+
+        
+    }
+
+   @Test
+    void amountValidTest(){
+        //BankAccount bankAccount = new BankAccount( "a@c.com", 100);
+        assertFalse(BankAccount.amountValid(-1.22));
+        assertFalse(BankAccount.amountValid( -0.0001));
+        assertFalse(BankAccount.amountValid(-23323332.33));
+        assertFalse(BankAccount.amountValid( -0.0001));
+        assertFalse(BankAccount.amountValid(-24.333211));
+        assertFalse(BankAccount.amountValid( -33.333));//These numbers that are negative will turn into invalid
+        assertFalse(BankAccount.amountValid(0)); //This will be invalid because it is invalid when it is 0
+        assertTrue(BankAccount.amountValid(50.00));
+        assertTrue(BankAccount.amountValid(43.23));
+        assertTrue(BankAccount.amountValid(32.00));
+        assertTrue(BankAccount.amountValid(21.3));
+        assertTrue(BankAccount.amountValid(2.00));
+        assertTrue(BankAccount.amountValid(7.22));//All of the positive numbers will turn into an valid ammounr
+
+
+
+
+
+    }
+
+    /**
+     * @throws IllegalArgumentException
+     */
+    @Test
+    void depositTest() throws IllegalArgumentException, IllegalAccessException{
+
+        BankAccount bankAccountTwo = new BankAccount("mm---@.com", 100);
+        assertThrows(IllegalArgumentException.class, () -> bankAccountTwo.deposit(-123.9));
+        assertThrows(IllegalAccessException.class, () -> bankAccountTwo.deposit(-90.00));
+        assertThrows(IllegalAccessException.class, () -> bankAccountTwo.deposit(23.00));
+        assertThrows(IllegalAccessException.class, () -> bankAccountTwo.deposit(2.34));
+
+
+
+        
+
+
+    }
+   private void assertThrows(Class<IllegalAccessException> class1, Object deposit) {
+    
+    }
+
+/**
+     *
+     */
+    @Test
+    void transferTest() throws IllegalArgumentException{
+        BankAccount bankAccount = new BankAccount("a@b.com", 300);
+        BankAccount bankAccountTwo = new BankAccount("mm---@.com", 200);
+        
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.transfer(bankAccountTwo, 100));
+
+        bankAccount.transfer(bankAccountTwo, 0);
+        assertEqual(200.0, bankAccount.getBalance());
+        assertEqual(300.0, bankAccountTwo.getBalance());
+
+        
+
+
+
+    }
+
+
+
+
+
+    private void assertThrows(Class<IllegalArgumentException> class1, Object transfer) {
+}
+
+    private void assertEqual(double d, double balance) {
+}
+
+    @Test
+
+    //mm---@.com
+    //mmcgeehan@@.com
+    void constructorTest() {
+        BankAccount bankAccount = new BankAccount("a@b.com", 200);
+
+        assertEquals("a@b.com", bankAccount.getEmail());
+        assertEquals(200, bankAccount.getBalance(), 0.001);
+        //check for exception thrown correctly
+        assertEquals(IllegalArgumentException.class, new BankAccount("a@c.com", 100));
+
+        BankAccount bankAccountTwo = new BankAccount("mm---@.com", 200);
+
+        assertEquals("mm---@.com", bankAccountTwo.getEmail());
+        assertEquals(200, bankAccountTwo.getBalance(), 0.001);
+        //check for exception thrown correctly
+        assertEquals(IllegalArgumentException.class, new BankAccount("mm---@.com", 100));
+
+
+        BankAccount bankAccountThree = new BankAccount("mmcgeehan@@.com", 200);
+
+        assertEquals("mmcgeehan@@.com", bankAccountThree.getEmail());
+        assertEquals(200, bankAccountThree.getBalance(), 0.001);
+        //check for exception thrown correctly
+        assertEquals(IllegalArgumentException.class,  new BankAccount("mmcgeehan@@.com", 100));
+    }
+
+}
